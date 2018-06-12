@@ -23,16 +23,14 @@ description: Acerca de mi
 
 # List of links in the navigation bar
 navbar-links:
-  About Me: "acercade"
-  Resources:
-    - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"
-    - Learn markdown: "http://www.markdowntutorial.com/"
-    - GitHub Pages: "https://pages.github.com/"
-  Author's home: "http://deanattali.com"
+  Acerca de mi: "aboutme"
+#  Proyectos:
+  Curriculum Vitae: "http://leoag.githu.io/cv-leoag.pdf"
 
 # Image to show in the navigation bar - image must be a square (width = height)
 # Remove this parameter if you don't want an image in the navbar
 #avatar: "/img/avatar-icon.png"
+avatar: "https://avatars1.githubusercontent.com/u/993814?s=400&u=6714e3a20e49ae15bb7bfea6322d6ad6fa84cf53&v=4"
 
 # If you want to have an image logo in the top-left corner instead of the title text,
 # then specify the following parameter
