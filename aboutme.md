@@ -7,7 +7,7 @@ subtitle: Algunos datos sobre mi y formas de contactarme
 Mi nombre es Leonardo Andrés Gallego
 
 - Sysadmin
-- Fotografo amateur
+- Fotógrafo amateur
 - Activista del Software Libre
 
 ### Más datos
