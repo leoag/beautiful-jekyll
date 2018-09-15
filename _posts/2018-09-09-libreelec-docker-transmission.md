@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Usando Docker en LibreELEC para correr MySQL
+title: Usando Docker en LibreELEC para correr Transmission
 image: /img/hello_world.jpeg
 ---
 
