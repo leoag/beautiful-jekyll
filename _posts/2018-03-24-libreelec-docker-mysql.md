@@ -13,29 +13,39 @@ Actualmente corre sobre el siguiente hardware:
 * Odroid C2
 * Cubox iMX6 devices
 
-Yo la he utilizado en la Raspberry Pi 3, y actualmente la utilizo con la Odroid C2, ya que está última tiene soporte para acelerar por hardware el decode de x265 (HEVC).
+Lo he utilizado en la Raspberry Pi 3/2, y actualmente la utilizo con la Odroid C2, ya que está última tiene soporte para acelerar por hardware el decode de x265 (HEVC).
 
-Este post es para recordarme como montar contenedores docker en LibreELEC y poder correr un MySQL como servidor, habilitando la base de datos compartida entre todos los dispositivos que corran Kodi (Kodi como aplicación, también corre en Windows, Max OS X, Android, iOS y, por supuesto, Linux).
+Este post es para recordarme como armar el media center con contenedores docker en LibreELEC y poder correr un MySQL como servidor central para la DB, habilitando la base de datos compartida entre todos los dispositivos que corran Kodi en la red (Kodi como aplicación además de Linux corre en Windows, Max OS X, Android e iOS).
 
-Primero hay que instalar Docker CE en LibreELEC/Kodi, mediante el gestor de Addons de la interface.
+Algunos pasos hay que realizarlos en Kodi/LibreELEC primero.
 
-Habilitar la opción de "Wait for network before starting Kodi", ya que necesitamos que docker este funcionando y las interfaces de red en linea antes de que Kodi intente levantar la DB.
+1. Habilitar el la espera de conexión de red antes de iniciar Kodi; en el menú "LibreELEC" -> "Settings" -> "Network", habilitar "Wait for network before starting kodi", y definir el tiempo maximo (10 sec, por defecto).
 
-En el caso de la Odroid C2, es un CPU ARMv8, es decir arquitectura aarch64. Por lo tanto, las imagenes oficiales de mysql no funcionan (solo tienen para x86). Actualmente hay distintas opciones, pero en su momento la única que encontre fue la de haotseng: 
+2. Luego en "Addons", buscamos "Docker", de Team LibreELEC. Con esto tendremos el community engine para poder correr contendores. 
+
+3. Buscamos una Docker image para MySQL/MariaDB, en el caso de la Odroid C2, es un CPU ARMv8, es decir arquitectura aarch64. Por lo tanto, las imagenes oficiales de mysql no funcionan (solo tienen para x86). Actualmente hay distintas opciones, pero en su momento la única que encontre fue la de haotseng/ebspace: 
 * https://github.com/haotseng/aarch64_dockerfiles 
 * https://hub.docker.com/r/ebspace/aarch64-mysql/
 
-Aquí la lista oficial de imagenes de docker para arm64v8:
+Actualmente MariaDB publica imagenes arm64v8, por lo que yo recomendaria utilizar esas, que tendrán mejor soporte:
+* https://hub.docker.com/r/arm64v8/mariadb/
+
+Aquí la lista de imagenes de Docker Hub con soporte para arm64v8:
 * https://hub.docker.com/u/arm64v8/
 
 
-Creamos el directorio:
+Creamos el directorio en el host de LibreELEC:
 
 ```mkdir /storage/mysql```
 
-Montamos la imagen de docker:
+Instalamos y corremos la imagen de docker:
 ```
-docker run -d -p 3306:3306 -v /storage/mysql:/var/lib/mysql --restart unless-stopped -e MYSQL_ROOT_PASSWORD=passrootmysql --name kodi-mysql ebspace/aarch64-mysql
+docker run -d -p 3306:3306 \
+-v /storage/mysql:/var/lib/mysql \
+--restart unless-stopped \
+-e MYSQL_ROOT_PASSWORD=passrootmysql \
+--name kodi-mysql \
+ebspace/aarch64-mysql
 ```
 
 Logueamos y creamos la DB y usuario para Kodi:
@@ -47,6 +57,58 @@ Si necesitamos revisar algo del contenedor, podemos ingresar por bash:
 ```
 docker exec -it kodi-mysql bash
 ```
+
+Luego hay que configurar la conexión en Kodi dentro de LibreELEC, en el host nuevamente:
+
+```nano ~/.kodi/userdata/advancedsettings.xml```
+
+Agregamos lo siguiente (incluyo un par de parametros relacionados a buffer y cache):
+
+```
+<advancedsettings>
+<cache>
+#        <memorysize>0</memorysize>
+# number of bytes used for buffering streams in memory
+#   When set to 0 the cache will be written to disk instead of RAM 
+        <buffermode>1</buffermode>  
+## Choose what to buffer:
+#    0) Buffer all internet filesystems (like "2" but additionally also ftp, webdav, etc.) (default)
+#    1) Buffer all filesystems (including local)
+#    2) Only buffer true internet filesystems (streams) (http, etc.)
+#    3) No buffer -->
+        <readfactor>4.0</readfactor> 
+# this factor determines the max readrate in terms of readbufferfactor * avg bitrate of a video file.
+##This can help on bad connections to keep the cache filled. It will also greatly speed up buffering. Default value 4.0.
+</cache>
+# db
+<videodatabase>
+        <type>mysql</type>
+	<host>127.0.0.1</host>
+        <port>3306</port>
+        <user>kodi</user>
+        <pass>kodi</pass>
+</videodatabase> 
+<musicdatabase>
+        <type>mysql</type>
+	<host>127.0.0.1</host>
+        <port>3306</port>
+        <user>kodi</user>
+        <pass>kodi</pass>
+</musicdatabase>
+<videolibrary>
+        <importwatchedstate>true</importwatchedstate>
+        <importresumepoint>true</importresumepoint>
+</videolibrary>
+</advancedsettings>
+</musicdatabase>
+<videolibrary>
+        <importwatchedstate>true</importwatchedstate>
+        <importresumepoint>true</importresumepoint>
+</videolibrary>
+</advancedsettings>
+```
+
+
 
 
 Última modificación: 2018-08-28
