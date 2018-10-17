@@ -6,7 +6,7 @@ subtitle: Datos de Contacto
 #image: /qr/qr.gif
 ---
 
--> ![QR](/qr/qr.gif#style=centerme) <-
+->![QR](/qr/qr.gif)<-
 
 
 
