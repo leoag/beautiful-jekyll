@@ -2,6 +2,7 @@
 layout: post
 title: Usando Docker en LibreELEC para correr MySQL
 image: /img/libreelec-logo.png
+tags: [libreelec, openelec, docker, mysql]
 ---
 
 LibreELEC (un fork de OpenELEC) es una distribución especializada para correr Kodi, una aplicación de software libre para media centers o home theaters.

@@ -2,6 +2,7 @@
 layout: post
 title: Usando Docker en LibreELEC para correr Transmission
 image: /img/transmission-logo.png
+tags: [libreelec, openelec, docker, transmission, bittorrent, kodi, odroid]
 ---
 
 LibreELEC (un fork de OpenELEC) es una distribución especializada para correr Kodi, una aplicación de software libre para media centers o home theaters.
