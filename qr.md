@@ -5,8 +5,6 @@ subtitle: Datos de Contacto
 ---
 
 
-image: "qr/qr.gif"
+bigimg: qr/qr.gif
 
-### 
 
-...
